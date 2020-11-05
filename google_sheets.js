@@ -1,5 +1,6 @@
+const { token } = require('./sheets_config.json');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const doc = new GoogleSpreadsheet('1xWGwNdCoDQMk1ZeBBCp-CoGN1FkKOMqs1_EznkoMPaA');
+const doc = new GoogleSpreadsheet(token);
 
 async function entryIdExists(id, sheet) {
     const rows = await sheet.getRows();
