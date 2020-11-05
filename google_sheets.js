@@ -12,7 +12,6 @@ async function entryIdExists(id, sheet) {
 }
 
 async function insert(discordID, first_name, last_name, email, affiliation) {
-
     await doc.useServiceAccountAuth(require('./credentials.json'));
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
