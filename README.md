@@ -1,4 +1,4 @@
-## Matthew Thien
+## Matthew T
 
 Discord Bot with Javascript
    * Made with Node.js, Discord.js and Google Spreadsheet 
