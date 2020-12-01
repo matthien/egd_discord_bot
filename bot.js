@@ -8,6 +8,7 @@ const client = new Discord.Client();
 client.on('ready', () => {
     console.log("Connected as " + client.user.tag);
     console.log('Ready!');
+    
 });
 
 client.on('message', msg => {
@@ -15,7 +16,7 @@ client.on('message', msg => {
         //console.log('Received a DM');
         //msg.channel.send(`You typed ${msg}`);
 
-        if (msg.content.toLowerCase() === "egd") { 
+        if (msg.content.toLowerCase() === "egd" && checkUser(msg.member) == false) { 
             msg.channel.send('Please type in your name, e-mail and affiliation in this format: **first name / last name / email / affiliation**');
             let messageFilter = m => !m.author.bot;
             let collector = new Discord.MessageCollector(msg.channel, messageFilter, {max: 1});
@@ -42,9 +43,31 @@ client.on('guildMemberAdd', member => {
 
     const memberID = member.id;
     const welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
-    welcomeChannel.send(`Welcome to the server! ${member}`);
+    welcomeChannel.send(`Welcome ${member} to the server! \n\n **Please check your DM's :eyes:**`);
 
-    member.send("Welcome to the server! :crown: :crown: \nIf you're new, please reply with **EGD**!");
+    directMessage(member);
 });
+
+async function directMessage(member) {
+    if (await checkUser(member)) {
+        console.log('bot true')
+        console.log(`${member.id} has returned!`);
+        member.send("Welcome back to the EGD Discord server! :crown: :crown:")
+    }
+    else { 
+        console.log('bot not true');
+        member.send("Welcome to the EGD Discord server! :crown: :crown:\nIf you're new, please reply with EGD!");
+    }
+}
+
+async function checkUser(member) { 
+    if(await sheets.checkReturningUser(member.id) == true) { 
+        return true;
+    }
+    else { 
+        return false;
+    }
+}
+
 
 client.login(token);
