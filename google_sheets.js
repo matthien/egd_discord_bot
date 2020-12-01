@@ -17,11 +17,11 @@ async function checkReturningUser(discordID) {
 
     for (row of rows) {
         if (row.discordID == discordID) { 
-            console.log('google sheets true');
+            //console.log('google sheets true');
             return true;
         }
     }
-    console.log('google sheets not true');
+    //console.log('google sheets not true');
     return false;
 
 }
