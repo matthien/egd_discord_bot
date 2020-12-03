@@ -1,7 +1,9 @@
-const fs = require('fs');
+ 
 const Discord = require('discord.js');
 const sheets = require('./google_sheets.js');
+const parse = require('./parse_email.js');
 const { prefix, token } = require('./config.json');
+//const { parse } = require('path');
 
 const client = new Discord.Client();
 
@@ -59,8 +61,25 @@ async function egdPrompt (msg) {
             msg.channel.send("**Name:**\n\t" + arr[0] + " " + arr[1] +
                             "\n**Email:**\n\t" + arr[2] +
                             "\n**Affiliation:**\n\t" + arr[3]);
-            sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3]) 
-            console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
+            //sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
+            //console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
+            const emailSheetNum = parse.check(parseEmail(arr[2]));
+
+            if (emailSheetNum != 0) { 
+                //console.log('trying to insert in to subsheet');
+                sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], emailSheetNum) 
+                if(emailSheetNum == 1) { 
+                    console.log(`Inserted ${arr[0]} ${arr[1]} into CUNY`);
+                }
+                else if(emailSheetNum == 2) { 
+                    console.log(`Inserted ${arr[0]} ${arr[1]} into SUNY`);
+                }
+            }
+            else { 
+                sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
+                console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
+            }
+
         });
     }
     else if (msg.content.toLowerCase() === "egd" && check == true) {
@@ -87,5 +106,9 @@ async function checkUserID(memberID) {
     }
 }
 
+function parseEmail(email) { 
+    var parsed = email.split("@");
+    return parsed[1];
+}
 
 client.login(token);
