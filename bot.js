@@ -34,7 +34,7 @@ async function initialDirectMessage(member) {
     let check = await checkUserMember(member)
     if (check) {
         //console.log('bot true')
-        console.log(`${member.id} has returned!`);
+        //console.log(`${member.id} has returned!`);
         member.send("Welcome back to the EGD Discord server! :crown: :crown:")
     }
     else { 
@@ -79,7 +79,6 @@ async function egdPrompt (msg) {
                 sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
                 console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
             }
-
         });
     }
     else if (msg.content.toLowerCase() === "egd" && check == true) {
