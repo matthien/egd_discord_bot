@@ -47,46 +47,52 @@ async function egdPrompt (msg) {
     //console.log(msg.author.id);
     //console.log('out function');
     let check = await checkUserID(msg.author.id);
+
     if (msg.content.toLowerCase() === "egd" && check == false) { 
         //console.log('in function');
         msg.channel.send('Please type in your name, e-mail and affiliation in this format: **first name / last name / email / affiliation**');
-        let messageFilter = m => !m.author.bot;
-        let collector = new Discord.MessageCollector(msg.channel, messageFilter, {max: 1});
-        collector.on('collect', (msg, col) =>  { 
-            //console.log("Collected message: " + msg.content);
-            //console.log("Collector is off!");
-            var arr = msg.content.split("/").map(function(item) {
-                if(item === undefined) { 
-                    return "";
-                }
-                return item.trim();
-            });
-            msg.channel.send("**Name:**\n\t" + arr[0] + " " + arr[1] +
-                            "\n**Email:**\n\t" + arr[2] +
-                            "\n**Affiliation:**\n\t" + arr[3]);
-            //sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
-            //console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
-            const emailSheetNum = parse.check(parseEmail(arr[2]));
+        msg.channel.awaitMessages(m => m.author.id == msg.author.id,{max: 1, time: 30000})
+            .then(collected => { 
+                //console.log("Collected message: " + msg.content);
+                //console.log("Collector is off!");
+                //console.log(collected.first().content);
+                var input = collected.first().content;
+                var arr = input.split("/").map(function(item) {
+                    if(item === undefined) { 
+                        return "";
+                    }
+                    return item.trim();
+                });
+                msg.channel.send("**Name:**\t" + arr[0] + " " + arr[1] +
+                            "\n**Email:**\t" + arr[2] +
+                            "\n**Affiliation:**\t" + arr[3]);
+                //sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
+                //console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
+                const emailSheetNum = parse.check(parseEmail(arr[2]));
 
-            if (emailSheetNum != 0) { 
-                //console.log('trying to insert in to subsheet');
-                sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], emailSheetNum) 
-                if(emailSheetNum == 1) { 
-                    console.log(`Inserted ${arr[0]} ${arr[1]} into CUNY`);
+                if (emailSheetNum != 0) { 
+                    //console.log('trying to insert in to subsheet');
+                    sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], emailSheetNum) 
+                    if(emailSheetNum == 1) { 
+                        console.log(`Inserted ${arr[0]} ${arr[1]} into CUNY`);
+                    }
+                    else if(emailSheetNum == 2) { 
+                        console.log(`Inserted ${arr[0]} ${arr[1]} into SUNY`);
+                    }
                 }
-                else if(emailSheetNum == 2) { 
-                    console.log(`Inserted ${arr[0]} ${arr[1]} into SUNY`);
+                else { 
+                    sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
+                    console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
                 }
-            }
-            else { 
-                sheets.insert(msg.author.id, arr[0], arr[1], arr[2], arr[3], 0) 
-                console.log(`Inserted ${arr[0]} ${arr[1]} into Database`);
-            }
-        });
-    }
+            }).catch(() => {
+                msg.reply("There doesn't seem to be a response after 30 seconds. :frowning:\nType EGD again to register. ");
+            });
+        }
+
     else if (msg.content.toLowerCase() === "egd" && check == true) {
         msg.channel.send("Already in the database! Enjoy your stay! :hugging:")
     }
+
 }
 async function checkUserMember(member) { 
     if(await sheets.checkReturningUser(member.id) == true) { 
