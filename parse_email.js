@@ -31,8 +31,6 @@ function check(email) {
     } catch (err) {
         console.error(err);
     }
-
-
 }
 
 exports.check = check;

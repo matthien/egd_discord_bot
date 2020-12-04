@@ -14,7 +14,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    if (msg.channel.type === 'dm' && !msg.author.bot) { //&& msg.content === 'YES') { 
+    if (msg.channel.type === 'dm' && !msg.author.bot && msg.content.toLowerCase() === "egd") { //&& msg.content === 'YES') { 
         egdPrompt(msg);
     }
 });
@@ -48,7 +48,7 @@ async function egdPrompt (msg) {
     //console.log('out function');
     let check = await checkUserID(msg.author.id);
 
-    if (msg.content.toLowerCase() === "egd" && check == false) { 
+    if (check == false) { 
         //console.log('in function');
         msg.channel.send('Please type in your name, e-mail and affiliation in this format: **first name / last name / email / affiliation**');
         msg.channel.awaitMessages(m => m.author.id == msg.author.id,{max: 1, time: 30000})
@@ -87,8 +87,7 @@ async function egdPrompt (msg) {
             }).catch(() => {
                 msg.reply("There doesn't seem to be a response after 30 seconds. :frowning:\nType EGD again to register. ");
             });
-        }
-
+    }
     else if (msg.content.toLowerCase() === "egd" && check == true) {
         msg.channel.send("Already in the database! Enjoy your stay! :hugging:")
     }
