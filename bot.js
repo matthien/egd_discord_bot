@@ -10,7 +10,7 @@ const client = new Discord.Client();
 client.on('ready', () => {
     console.log("Connected as " + client.user.tag);
     console.log('Ready!');
-    
+    //client.user.setActivity("my code", { type: "WATCHING"})
 });
 
 client.on('message', msg => {
