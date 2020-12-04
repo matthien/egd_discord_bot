@@ -56,6 +56,9 @@ async function egdPrompt (msg) {
             //console.log("Collected message: " + msg.content);
             //console.log("Collector is off!");
             var arr = msg.content.split("/").map(function(item) {
+                if(item === undefined) { 
+                    return "";
+                }
                 return item.trim();
             });
             msg.channel.send("**Name:**\n\t" + arr[0] + " " + arr[1] +
@@ -105,7 +108,10 @@ async function checkUserID(memberID) {
     }
 }
 
-function parseEmail(email) { 
+function parseEmail(email) {
+    if(email === undefined) { 
+        return "";
+    }
     var parsed = email.split("@");
     return parsed[1];
 }
